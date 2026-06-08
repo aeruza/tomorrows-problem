@@ -15,3 +15,16 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result
 
+## TODO:
+- Fix up the SVG Paths for:
+  - Delete Note - Red Trash Can
+  - Promote / Outdent Icon
+  - Notepad Icon - List Icon
+  - Friends Icon - List Icon
+  - Brain Icon - List Icon
+  - Alert Icon - List Icon (Bottom Dot gets hidden on default view)
+  - Letter Icon - Icon for when there's no items in a list
+- Fix the overlap between Action Buttons & the Note Count in Row View
+- Disable being able to click and focus cursor on the Title text in home page and when viewing lists
+- Disable cursor focus on the "+" when creating a new list
+
