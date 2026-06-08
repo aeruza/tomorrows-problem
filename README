@@ -29,4 +29,5 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - Disable being able to click and focus cursor on the Title text in home page and when viewing lists
 - Disable cursor focus on the "+" when creating a new list
 - Improved UI + Design
+- Add in mobile integration (nice to have - would be nice to be able to use the app offline)
 
