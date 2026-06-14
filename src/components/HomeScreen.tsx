@@ -82,7 +82,7 @@ export default function HomeScreen() {
             {/* Header */}
             <header className="sticky top-0 z-10 bg-white/80 dark:bg-neutral-800/80 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-700/50">
                 <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white select-none pointer-events-none">
                         Tomorrow&apos;s Problem
                     </h1>
                     <div className="flex items-center gap-3">
@@ -257,7 +257,7 @@ export default function HomeScreen() {
                                     onDragLeave={handleDragLeave}
                                 >
                                     <Link href={`/list/${list.id}`}>
-                                        <div className="flex items-center gap-4 p-4 rounded-xl bg-white dark:bg-neutral-800 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer">
+                                        <div className="flex items-center gap-4 p-4 pr-20 rounded-xl bg-white dark:bg-neutral-800 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer">
                                             <div className="flex items-center gap-2 shrink-0">
                                                 <div
                                                     className="w-4 h-4 rounded-full"
@@ -413,7 +413,8 @@ export default function HomeScreen() {
                 {/* Create Lists Button */}
                 <button
                     onClick={() => setShowCreateModal(true)}
-                    className="fixed bottom-8 right-8 w-14 h-14 bg-neutral-800 dark:bg-neutral-200 hover:bg-neutral-700 dark:hover:bg-neutral-300 text-white dark:text-neutral-800 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex items-center justify-center text-2xl"
+                    tabIndex={-1}
+                    className="fixed bottom-8 right-8 w-14 h-14 bg-neutral-800 dark:bg-neutral-200 hover:bg-neutral-700 dark:hover:bg-neutral-300 text-white dark:text-neutral-800 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex items-center justify-center text-2xl focus:outline-none"
                     aria-label="Create New List"
                 >
                     +

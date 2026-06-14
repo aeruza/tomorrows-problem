@@ -15,7 +15,7 @@ function PencilIcon({ className = "w-5 h-5" }: IconProps) {
 function NotepadIcon({ className = "w-5 h-5" }: IconProps) {
     return (
         <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 2H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
         </svg>
     );
 }
@@ -23,7 +23,7 @@ function NotepadIcon({ className = "w-5 h-5" }: IconProps) {
 function FriendsIcon({ className = "w-5 h-5" }: IconProps) {
     return (
         <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/>
         </svg>
     );
 }
@@ -39,7 +39,7 @@ function GraduationIcon({ className = "w-5 h-5" }: IconProps) {
 function BrainIcon({ className = "w-5 h-5" }: IconProps) {
     return (
         <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12a9 9 0 11-18 0 9 9 0 0118 0m-9 5v-2m0-8v2m4.364-1.636l.707-.707M5.342 5.342l.707.707"/>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 6.75a3.75 3.75 0 117.5 0v.75m-7.5-.75a3 3 0 00-3 3v.75m10.5-3.75a3 3 0 013 3v.75M5.25 10.5a3 3 0 000 6h.75m12-6a3 3 0 010 6h-.75M5.25 10.5h.008v.008H5.25V10.5zm13.5 0h.008v.008h-.008V10.5zM9 16.5h6m-7.5 0v1.5a1.5 1.5 0 001.5 1.5h6a1 1.5 0 001.5-1.5V16.5"/>
         </svg>
     );
 }
@@ -61,7 +61,8 @@ function CodeIcon({ className = "w-5 h-5" }: IconProps) {
 function AlertIcon({ className = "w-5 h-5" }: IconProps) {
     return (
         <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L12.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L12.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126z"/>
+            <circle cx="12" cy="16.5" r="0.75" fill="currentColor" stroke="none"/>
         </svg>
     );
 }
