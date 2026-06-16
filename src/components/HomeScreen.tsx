@@ -86,7 +86,7 @@ export default function HomeScreen() {
             <header className="sticky top-0 z-10 bg-white/80 dark:bg-neutral-800/80 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-700/50">
                 <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
                     <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                        Tomorrow&apos;s Problem
+                        Tomorrow's Problem
                     </h1>
                     <div className="flex items-center gap-3">
                         {/* View Toggle */}

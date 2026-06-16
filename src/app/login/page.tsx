@@ -46,7 +46,7 @@ export default function LoginPage() {
         <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 flex items-center justify-center px-4">
             <div className="w-full max-w-sm">
                 <h1 className="text-2xl font-bold text-gray-900 dark:text-white text-center mb-2">
-                    Tomorrow&apos;s Problem
+                    Tomorrow's Problem
                 </h1>
                 <p className="text-sm text-gray-500 dark:text-gray-400 text-center mb-8">
                     {isSignUp ? "Create an account to get started." : "Sign in to continue."}
