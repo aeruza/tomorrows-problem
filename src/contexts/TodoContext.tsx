@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { TodoList, TodoItem, TrashItem, ListIcon } from "@/types";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "./AuthContext";
