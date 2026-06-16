@@ -152,14 +152,14 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
 
     const updateList = (id: string, name: string, colour: string, icon: ListIcon) => {
         setLists((prev) => prev.map(list => list.id === id ? { ...list, name, colour, icon } : list));
-        supabase.from("lists").update({ name, colour, icon }).eq("id", id);
+        supabase.from("lists").update({ name, colour, icon }).eq("id", id).eq("user_id", user?.id);
     }
 
     const deleteList = (id: string) => {
         const list = lists.find(l => l.id === id);
         saveUndoSnapshot(`Deleted list "${list?.name}"`);
         setLists((prev) => prev.filter(list => list.id !== id));
-        supabase.from("lists").delete().eq("id", id);
+        supabase.from("lists").delete().eq("id", id).eq("user_id", user?.id);
     }
 
     const reorderLists = (fromIndex: number, toIndex: number) => {
@@ -171,7 +171,7 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
 
             // Persist new sort order
             updated.forEach((list, index) => {
-                supabase.from("lists").update({ sort_order: index }).eq("id", list.id);
+                supabase.from("lists").update({ sort_order: index }).eq("id", list.id).eq("user_id", user?.id);
             });
 
             return updated;
@@ -210,7 +210,7 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
                 : list
             )
         );
-        supabase.from("items").update({ text }).eq("id", itemId);
+        supabase.from("items").update({ text }).eq("id", itemId).eq("user_id", user?.id);
     };
     const toggleItem = (listId: string, itemId: string) => {
         setLists((prev) =>
@@ -236,7 +236,7 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
 
                 // Persist all toggled
                 [itemId, ...childIds].forEach(id => {
-                    supabase.from("items").update({ completed: newCompleted }).eq("id", id);
+                    supabase.from("items").update({ completed: newCompleted }).eq("id", id).eq("user_id", user?.id);
                 });
 
                 return {
@@ -289,7 +289,7 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
                         }
                     }
                     if (isDescendant) {
-                        supabase.from("items").update({ depth: itemDepth - 1 }).eq("id", item.id);
+                        supabase.from("items").update({ depth: itemDepth - 1 }).eq("id", item.id).eq("user_id", user?.id);
                         return { ...item, depth: itemDepth - 1 };
                     }
                     return item;
@@ -311,7 +311,7 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
             original_list_name: trashItem.originalListName,
             created_at: trashItem.createdAt,
         });
-        supabase.from("items").delete().eq("id", itemId);
+        supabase.from("items").delete().eq("id", itemId).eq("user_id", user?.id);
     }
 
     const indentItem = (listId: string, itemId: string) => {
@@ -330,7 +330,7 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
 
                 if(currentDepth > (list.items[index - 1].depth ?? 0)) return list;
                 const newDepth = currentDepth + 1;
-                supabase.from("items").update({ depth: newDepth }).eq("id", itemId);
+                supabase.from("items").update({ depth: newDepth }).eq("id", itemId).eq("user_id", user?.id);
                 return {
                     ...list,
                     items: list.items.map((i) =>
@@ -350,7 +350,7 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
                 const currentDepth = list.items[index].depth ?? 0;
                 if (currentDepth <= 0) return list; // Can't outdent further
                 const newDepth = currentDepth - 1;
-                supabase.from("items").update({ depth: newDepth }).eq("id", itemId);
+                supabase.from("items").update({ depth: newDepth }).eq("id", itemId).eq("user_id", user?.id);
                 return {
                     ...list,
                     items: list.items.map((i) =>
@@ -371,7 +371,7 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
                 items.splice(toIndex, 0, movedItem);
 
                 items.forEach((item, index) => {
-                    supabase.from("items").update({ sort_order: index }).eq("id", item.id);
+                    supabase.from("items").update({ sort_order: index }).eq("id", item.id).eq("user_id", user?.id);
                 });
                 return { ...list, items };
             })
@@ -488,13 +488,13 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
 
     const permanentlyDeleteItem = (trashItemId: string) => {
         setTrash((prev) => prev.filter(item => item.id !== trashItemId));
-        supabase.from("trash").delete().eq("id", trashItemId);
+        supabase.from("trash").delete().eq("id", trashItemId).eq("user_id", user?.id);
     }
 
     const emptyTrash = () => {
         saveUndoSnapshot("Emptied Trash");
         setTrash([]);
-        supabase.from("trash").delete().neq("id", ""); // delete all
+        supabase.from("trash").delete().eq("user_id", user?.id); // delete all for this user
     }
 
     return (
