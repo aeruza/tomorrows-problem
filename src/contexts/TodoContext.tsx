@@ -60,9 +60,9 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
         setLoading(true);
 
         const [listsRes, itemsRes, trashRes] = await Promise.all([
-            supabase.from("lists").select("*").order("sort_order").order("created_at"),
-            supabase.from("items").select("*").order("sort_order").order("created_at"),
-            supabase.from("trash").select("*").order("deleted_at", { ascending: false }).limit(20),
+            supabase.from("lists").select("*").eq("user_id", user.id).order("sort_order").order("created_at"),
+            supabase.from("items").select("*").eq("user_id", user.id).order("sort_order").order("created_at"),
+            supabase.from("trash").select("*").eq("user_id", user.id).order("deleted_at", { ascending: false }).limit(20),
         ]);
 
         const dbLists = listsRes.data ?? [];
@@ -147,7 +147,7 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
             createdAt: new Date().toISOString(),
         };
         setLists((prev) => [...prev, newList]);
-        supabase.from("lists").insert({ id, name, colour, icon, sort_order: sortOrder });
+        supabase.from("lists").insert({ id, user_id: user?.id, name, colour, icon, sort_order: sortOrder });
     }
 
     const updateList = (id: string, name: string, colour: string, icon: ListIcon) => {
@@ -194,7 +194,7 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
                 list.id === listId ? { ...list, items: [...list.items, newItem] } : list
             )
         );
-        supabase.from("items").insert({ id, list_id: listId, text, completed: false, depth: 0, sort_order: sortOrder });
+        supabase.from("items").insert({ id, user_id: user?.id, list_id: listId, text, completed: false, depth: 0, sort_order: sortOrder });
     };
 
     const updateItem = (listId: string, itemId: string, text: string) => {
@@ -303,6 +303,7 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
         );
         supabase.from("trash").insert({
             id: trashItem.id,
+            user_id: user?.id,
             text: trashItem.text,
             completed: trashItem.completed,
             depth: trashItem.depth ?? 0,
@@ -402,6 +403,7 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
         completedItems.forEach(item => {
             supabase.from("trash").insert({
                 id: item.id,
+                user_id: user?.id,
                 text: item.text,
                 completed: item.completed,
                 depth: item.depth ?? 0,
@@ -443,12 +445,14 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
 
                 supabase.from("lists").insert({
                     id: newList.id,
+                    user_id: user?.id,
                     name: newList.name,
                     colour: newList.colour,
                     sort_order: 9999,
                 });
                 supabase.from("items").insert({
                     id: restoredItem.id,
+                    user_id: user?.id,
                     list_id: newList.id,
                     text: restoredItem.text,
                     completed: restoredItem.completed,
@@ -463,6 +467,7 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
             const sortOrder = targetList.items.length;
             supabase.from("items").insert({
                 id: restoredItem.id,
+                user_id: user?.id,
                 list_id: trashItem.originalListId,
                 text: restoredItem.text,
                 completed: restoredItem.completed,
