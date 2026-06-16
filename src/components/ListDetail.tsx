@@ -48,7 +48,7 @@ export default function ListDetail({ listId }: ListDetailProps) {
     if (!list) {
         return (
             <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 flex items-center justify-center">
-                <div className="text center">
+                <div className="text-center">
                     <p className="text-gray-500 dark:text-gray-400 text-lg mb-4">
                         List not found.
                     </p>
@@ -60,7 +60,7 @@ export default function ListDetail({ listId }: ListDetailProps) {
                     </Link>
                 </div>
             </div>
-        )
+        );
     }
 
     const handleAddItem = () => {
@@ -93,14 +93,14 @@ export default function ListDetail({ listId }: ListDetailProps) {
                 dragNodeRef.current.style.opacity = "0.4";
             }
         }, 0);
-    }
+    };
 
-    const handelDragOver = (e: React.DragEvent<HTMLDivElement>, index: number) => { 
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>, index: number) => { 
         e.preventDefault();
         e.dataTransfer.dropEffect = "move";
         if (dragIndex === null || dragIndex === index) return;
         setDragOverIndex(index);
-    }
+    };
 
     const handleDragEnd = (e: React.DragEvent<HTMLDivElement>) => { 
         if (dragNodeRef.current) {
@@ -117,9 +117,11 @@ export default function ListDetail({ listId }: ListDetailProps) {
             if (isHorizontal) {
                 const itemId = list.items[dragIndex]?.id;
                 if (itemId) {
-                    indentItem(listId, itemId);
-                } else {
-                    outdentItem(listId, itemId);
+                    if(deltaX > 0) {
+                        indentItem(listId, itemId);
+                    } else {
+                        outdentItem(listId, itemId);
+                    }
                 }
             } else if (dragOverIndex !== null && dragIndex !== dragOverIndex) {
                 reorderItems(listId, dragIndex, dragOverIndex);
@@ -130,7 +132,7 @@ export default function ListDetail({ listId }: ListDetailProps) {
         setDragOverIndex(null);
         dragNodeRef.current = null;
         dragStartPos.current = null;
-    }
+    };
 
     const handleDragLeave = () => {
         setDragOverIndex(null);
@@ -141,8 +143,8 @@ export default function ListDetail({ listId }: ListDetailProps) {
         const isManual = sortMode === "manual";
         const canIndent =
          isManual && 
-         index > 0 && 
          depth < 2 && 
+         index > 0 && 
          (sortedItems[index - 1].depth ?? 0) >= depth;
         const canOutdent = isManual && depth > 0;
         const isDragOver = dragOverIndex === index && dragIndex !== index;
@@ -152,14 +154,14 @@ export default function ListDetail({ listId }: ListDetailProps) {
                 key={item.id}
                 draggable={isManual}
                 onDragStart={(e) => isManual && handleDragStart(e, index)}
-                onDragOver={(e) => isManual && handelDragOver(e, index)}
+                onDragOver={(e) => isManual && handleDragOver(e, index)}
                 onDragEnd={handleDragEnd}
                 onDragLeave={handleDragLeave}
                 className={`flex items-start gap-3 p-3 rounded-xl bg-white dark:bg-neutral-800 shadow-sm group transition-all duration-200 ${isManual ? "cursor-grab active:cursor-grabbing" : ""} ${
                     isDragOver 
                         ? "border-2 border-neutral-400 border-dashed" 
                         : "border-2 border-transparent"
-                    } ${dragIndex === index ? "opacity-40" : ""}`}
+                    } ${dragIndex === index ? "opacity-40" : item.completed ? "opacity-60" : ""}`}
                     style={{ marginLeft: isManual ? `${depth * 32}px` : undefined }}
             >
                 {/* Drag handle */}
@@ -208,7 +210,7 @@ export default function ListDetail({ listId }: ListDetailProps) {
                                     setEditingText("");
                                 }
                             }}
-                            className="w-full px-2 py-1 border border-neutral-300 rounded-lg bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-neutral-400 transition-all duration-200"
+                            className="w-full px-2 py-1 border border-neutral-300 rounded-xl bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-neutral-400 transition-all duration-200"
                             autoFocus
                         />
                     ) : (
@@ -266,16 +268,16 @@ export default function ListDetail({ listId }: ListDetailProps) {
                         aria-label="Delete item"
                     >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                         </svg>
                     </button>
                 </div>
             </div>
-        )
-    }
+        );
+    };
 
     return (
-        <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 transition-colors duration-200">
+        <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 transition-colors duration-300">
             {/* Header */}
             <header className="sticky top-0 z-10 bg-white/80 dark:bg-neutral-800/80 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-700/50">
                 <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
@@ -291,23 +293,24 @@ export default function ListDetail({ listId }: ListDetailProps) {
                         </Link>
                         <div className="flex items-center gap-2">
                             <div className="w-3 h-3 rounded-full" style={{ backgroundColor: list.colour }} />
-                            <h1 className="text-xl font-bold text-gray-900 dark:text-white select-none pointer-events-none">
+                            <h1 className="text-xl font-bold text-gray-900 dark:text-white">
                                 {list.name}
                             </h1>
                         </div>
                     </div>
+                    <ThemeToggle />
                 </div>
             </header>
 
             {/* Content */}
             <main className="max-w-3xl mx-auto px-4 py-6">
                 {/* Add item input */}
-                <div className="flex items-center gap-2 mb-6">
+                <div className="flex gap-2 mb-6">
                     <input
                         type="text"
                         value={newItemText}
                         onChange={(e) => setNewItemText(e.target.value)}
-                        placeholder="Add new reminder or note..."
+                        placeholder="Add a new reminder or note..."
                         className="flex-1 px-4 py-3 border border-neutral-200 dark:border-neutral-600 rounded-xl bg-white dark:bg-neutral-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-neutral-400 transition-all duration-200"
                         onKeyDown={(e) => {
                             if (e.key === "Enter") handleAddItem();
@@ -324,27 +327,30 @@ export default function ListDetail({ listId }: ListDetailProps) {
             
                 {/* Sort & Clear Controls */}
                 {list.items.length > 0 && (
-                    <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center justify-between mb-4 px-3 py-2 rounded-xl bg-white dark:bg-neutral-800 shadow-sm border border-neutral-100 dark:border-neutral-700/50">
                         <div className="flex items-center gap-2">
                             <label className="text-xs text-gray-500 dark:text-gray-400 font-medium">Sort:</label>
                             <select
                                 value={sortMode}
                                 onChange={(e) => setSortMode(e.target.value as SortMode)}
-                                className="text-xs px-2 py-1.5 rounded-lg border border-neutral-200 dark:border-neutral-600 bg-white dark:bg-neutral-800 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-neutral-400 transition-all duration-200"
+                                className="text-xs px-2 py-1.5 rounded-xl border border-neutral-200 dark:border-neutral-600 bg-white dark:bg-neutral-800 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-neutral-400 transition-all duration-200"
                             >
                                 <option value="manual">Manual</option>
-                                <option value="completed">Completed</option>
+                                <option value="completed">Completion Status</option>
                                 <option value="date-newest">Newest first</option>
                                 <option value="date-oldest">Oldest first</option>
                             </select>
                         </div>
                         {list.items.some((i) => i.completed) && (
-                            <button
-                                onClick={() => clearCompleted(listId)}
-                                className="text-xs text-red-500 hover:text-red-600 font-medium px-3 py-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
-                            >
-                                Clear completed
-                            </button>
+                            <>
+                                <div className="w-px h-4 bg-neutral-200 dark:bg-neutral-600" />
+                                <button
+                                    onClick={() => clearCompleted(listId)}
+                                    className="text-xs text-red-500 hover:text-red-600 font-medium px-3 py-1.5 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                                >
+                                    Clear completed
+                                </button>
+                            </>
                         )}
                     </div>
                 )}
@@ -352,11 +358,14 @@ export default function ListDetail({ listId }: ListDetailProps) {
                 {/* Items List */}
                 {list.items.length === 0 ? (
                     <div className="text-center py-16 animate-fade-in">
-                        <svg className="w-24 h-24 mx-auto mb-4 text-neutral-200 dark:text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={0.8}>
+                        <svg className="w-32 h-32 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={0.8} style={{ color: list.colour + "80" }}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                         </svg>
                         <p className="text-gray-500 dark:text-gray-400 font-medium">
-                            No items yet. Start by adding a new reminder or note!
+                            No items yet
+                        </p>
+                        <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">
+                            Add your first reminder or note above
                         </p>
                     </div>
                 ) : (
@@ -407,5 +416,5 @@ export default function ListDetail({ listId }: ListDetailProps) {
             {/* Undo Toast */}
             <UndoToast />
         </div>
-    )
+    );
 }

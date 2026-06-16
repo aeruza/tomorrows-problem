@@ -7,7 +7,7 @@ interface IconProps {
 function PencilIcon({ className = "w-5 h-5" }: IconProps) {
     return (
         <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.486l1.687-1.688a2.25 2.25 0 113.182 3.182L10.582 20.05a4.5 4.5 0 01-1.897 1.13L6 21.75l1.13-1.605a4.5 4.5 0 011.897-1.13l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/>
         </svg>
     );
 }
@@ -31,7 +31,7 @@ function FriendsIcon({ className = "w-5 h-5" }: IconProps) {
 function GraduationIcon({ className = "w-5 h-5" }: IconProps) {
     return (
         <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15v-3.75m0 0h-.008v.008H6.75V11,25z"/>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15v-3.75m0 0h-.008v.008H6.75V11.25z"/>
         </svg>
     );
 }
@@ -39,7 +39,8 @@ function GraduationIcon({ className = "w-5 h-5" }: IconProps) {
 function BrainIcon({ className = "w-5 h-5" }: IconProps) {
     return (
         <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 6.75a3.75 3.75 0 117.5 0v.75m-7.5-.75a3 3 0 00-3 3v.75m10.5-3.75a3 3 0 013 3v.75M5.25 10.5a3 3 0 000 6h.75m12-6a3 3 0 010 6h-.75M5.25 10.5h.008v.008H5.25V10.5zm13.5 0h.008v.008h-.008V10.5zM9 16.5h6m-7.5 0v1.5a1.5 1.5 0 001.5 1.5h6a1 1.5 0 001.5-1.5V16.5"/>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 18v-3m0-3v.01M12 21a9 9 0 110-18 9 9 0 010 18zm-2.5-9.5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5c0 1.03-.63 1.92-1.52 2.3-.37.15-.62.37-.78.65-.15.27-.2.55-.2.85"/>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9.5 8.5C9.5 6.84 10.62 5.5 12 5.5c.89 0 1.68.47 2.15 1.18M8 11.5c-.83.42-1.5 1.18-1.5 2.25 0 1.38 1.25 2.25 2.5 2.25M16 11.5c.83.42 1.5 1.18 1.5 2.25 0 1.38-1.25 2.25-2.5 2.25M10 15.5c.5.5 1.2.75 2 .75s1.5-.25 2-.75"/>
         </svg>
     );
 }
@@ -51,6 +52,7 @@ function SyncIcon({ className = "w-5 h-5" }: IconProps) {
         </svg>
     );
 }
+
 function CodeIcon({ className = "w-5 h-5" }: IconProps) {
     return (
         <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
@@ -61,8 +63,7 @@ function CodeIcon({ className = "w-5 h-5" }: IconProps) {
 function AlertIcon({ className = "w-5 h-5" }: IconProps) {
     return (
         <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L12.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126z"/>
-            <circle cx="12" cy="16.5" r="0.75" fill="currentColor" stroke="none"/>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
         </svg>
     );
 }

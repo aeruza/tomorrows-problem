@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import { useTodo } from "@/contexts/TodoContext";
 import { ListModal } from "@/components/ListModal";
 import ConfirmModal from "@/components/ConfirmModal";
@@ -13,7 +14,8 @@ import Link from "next/link";
 type ViewMode = "rows" | "tiles";
 
 export default function HomeScreen() {
-    const { lists, trash, addList, updateList, deleteList, reorderLists, restoreItem, permanentlyDeleteItem, emptyTrash } = useTodo();
+    const { signOut } = useAuth();
+    const { lists, trash, loading, addList, updateList, deleteList, reorderLists, restoreItem, permanentlyDeleteItem, emptyTrash } = useTodo();
     const [viewMode, setViewMode] = useState<ViewMode>("tiles");
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [editingList, setEditingList] = useState<{ id: string; name: string; colour: string; icon: ListIcon } | null>(null);
@@ -41,9 +43,10 @@ export default function HomeScreen() {
 
     const handleDragOver = (e: React.DragEvent<HTMLDivElement>, index: number) => {
         e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
         if (dragIndex === null || dragIndex === index) return;
         setDragOverIndex(index);
-    }
+    };
 
     const handleDragEnd = () => {
         if (dragNodeRef.current) {
@@ -55,7 +58,7 @@ export default function HomeScreen() {
         setDragIndex(null);
         setDragOverIndex(null);
         dragNodeRef.current = null;
-    }
+    };
 
     const handleDragLeave = () => {
         setDragOverIndex(null);
@@ -82,7 +85,7 @@ export default function HomeScreen() {
             {/* Header */}
             <header className="sticky top-0 z-10 bg-white/80 dark:bg-neutral-800/80 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-700/50">
                 <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white select-none pointer-events-none">
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
                         Tomorrow&apos;s Problem
                     </h1>
                     <div className="flex items-center gap-3">
@@ -109,26 +112,43 @@ export default function HomeScreen() {
                                 Tiles
                             </button>
                         </div>
+                        <ThemeToggle />
+                        <button
+                            onClick={() => signOut()}
+                            className="p-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-700 text-gray-600 dark:text-gray-300 transition-all duration-200"
+                            title="Sign Out"
+                            aria-label="Sign Out"
+                        >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                            </svg>
+                        </button>
                     </div>
                 </div>
             </header>
 
             {/* Content */}
             <main className="max-w-5xl mx-auto px-4 py-8">
-                {lists.length === 0 ? (
+                {loading ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 animate-pulse">
+                        {[...Array(4)].map((_, i) => (
+                            <div key={i} className="rounded-xl h-36 bg-neutral-200 dark:bg-neutral-800 " />
+                        ))}
+                    </div>
+                ) : lists.length === 0 ? (
                     <div className="text-center py-20 animate-fade-in">
                         <svg className="w-28 h-28 mx-auto mb-5 text-neutral-200 dark:text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={0.7}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                         </svg>
-                        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                        <p className="text-gray-500 dark:text-gray-400 text-lg font-medium">
                             No lists yet
-                        </h2>
-                        <p className="text-gray-500 dark:text-gray-400">
+                        </p>
+                        <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">
                             Create your first list to get started!
                         </p>
                     </div>
                 ) : viewMode === "tiles" ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
                         {lists.map((list, index) => {
                             const completedCount = list.items.filter((t) => t.completed).length;
                             const totalCount = list.items.length;
@@ -146,7 +166,7 @@ export default function HomeScreen() {
                                 >   
                                     <Link href={`/list/${list.id}`}>
                                         <div
-                                            className="rounded-xl p-5 h-36 flex flex-col justify-between shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] cursor-pointer"
+                                            className="rounded-xl p-5 h-36 flex flex-col justify-between shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] cursor-pointer overflow-hidden"
                                             style={{ backgroundColor: list.colour + "20"}}
                                         >
                                             <div className="flex items-center gap-2">
@@ -158,8 +178,8 @@ export default function HomeScreen() {
                                                     <ListIconDisplay icon={list.icon} className="w-5 h-5 text-gray-600 dark:text-gray-300" />
                                                 )}
                                             </div>
-                                            <div className="flex items-end justify-between">
-                                                <div>
+                                            <div className="flex items-end justify-between mb-2">
+                                                <div className="min-w-0 pr-2">
                                                     {inlineEditId === list.id ? (
                                                     <input
                                                         type="text"
@@ -176,7 +196,7 @@ export default function HomeScreen() {
                                                     />
                                                 ) : (
                                                     <h3 
-                                                        className="font-semibold text-gray-900 dark:text-white text-lg"
+                                                        className="font-semibold text-gray-900 dark:text-white text-lg truncate"
                                                         onDoubleClick={(e) => {
                                                             e.preventDefault();
                                                             handleInlineRenameStart(list.id, list.name);
@@ -185,22 +205,28 @@ export default function HomeScreen() {
                                                         {list.name}
                                                     </h3>
                                                 )}
-                                                <p className="text-sm text-gray-500 dark:text-gray-400">
-                                                    {totalCount}{" "}
-                                                    {totalCount === 1 ? "item" : "items"}
-                                                    {totalCount > 0 && completedCount > 0 && (
-                                                        <span className="text-green-600 dark:text-green-400">
-                                                            {" "}&middot; {completedCount} done
-                                                        </span>
-                                                    )}
+                                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                                                    {totalCount}{" "} {totalCount === 1 ? "item" : "items"}
                                                 </p>
                                                 </div>
                                                 {totalCount > 0 && (
-                                                    <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-white/60 dark:bg-neutral-700/60 text-gray-600 dark:text-gray-300">
+                                                    <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-white/60 dark:bg-neutral-700/60 text-gray-600 dark:text-gray-300 shrink-0">
                                                         {completedCount}/{totalCount}
                                                     </span>
                                                 )}
                                             </div>
+                                            {/* Progress Bar */}
+                                            {totalCount > 0 && (
+                                                <div className="w-full h-1 rounded-full bg-black/10 dark:bg-white/10">
+                                                    <div
+                                                        className="h-1 rounded-full transition-all duration-500"
+                                                        style={{
+                                                            width: `${(completedCount / totalCount) * 100}%`,
+                                                            backgroundColor: list.colour,
+                                                        }}
+                                                    />
+                                                </div>
+                                            )}
                                         </div>
                                     </Link>
                                     {/* Action Buttons */}
@@ -256,11 +282,15 @@ export default function HomeScreen() {
                                     onDragEnd={handleDragEnd}
                                     onDragLeave={handleDragLeave}
                                 >
-                                    <Link href={`/list/${list.id}`}>
-                                        <div className="flex items-center gap-4 p-4 pr-20 rounded-xl bg-white dark:bg-neutral-800 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer">
-                                            <div className="flex items-center gap-2 shrink-0">
-                                                <div
-                                                    className="w-4 h-4 rounded-full"
+                                    <div
+                                        className="flex items-center gap-4 p-4 rounded-xl bg-white dark:bg-neutral-800 shadow-sm hover:shadow-md transition-all duration-300 border-l-4"
+                                        style={{ borderLeftColor: list.colour }}
+                                    >
+                                        <Link href={`/list/${list.id}`} className="flex items-center gap-4 flex-1 min-w-0">
+                                            <div className="flex items-center gap-4 p-4 pr-20 rounded-xl bg-white dark:bg-neutral-800 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer">
+                                                <div className="flex items-center gap-2 shrink-0">
+                                                    <div
+                                                        className="w-4 h-4 rounded-full"
                                                     style={{ backgroundColor: list.colour }}
                                                 />
                                                 {list.icon && (
@@ -306,7 +336,7 @@ export default function HomeScreen() {
                                         </div>
                                     </Link>
                                     {/* Action Buttons */}
-                                    <div className="absolute top-1/2 -translate-y-1/2 right-20 flex gap-1 opacity-0 group-hover:opacity-100 transition-all duration-200">
+                                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all duration-200 shrink-0">
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
@@ -338,6 +368,7 @@ export default function HomeScreen() {
                                         </button>
                                     </div>
                                 </div>
+                            </div>
                             );
                         })}
                     </div>
@@ -413,8 +444,7 @@ export default function HomeScreen() {
                 {/* Create Lists Button */}
                 <button
                     onClick={() => setShowCreateModal(true)}
-                    tabIndex={-1}
-                    className="fixed bottom-8 right-8 w-14 h-14 bg-neutral-800 dark:bg-neutral-200 hover:bg-neutral-700 dark:hover:bg-neutral-300 text-white dark:text-neutral-800 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex items-center justify-center text-2xl focus:outline-none"
+                    className="fixed bottom-8 right-8 w-14 h-14 bg-neutral-800 dark:bg-neutral-200 hover:bg-neutral-700 dark:hover:bg-neutral-300 text-white dark:text-neutral-800 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex items-center justify-center text-2xl"
                     aria-label="Create New List"
                 >
                     +
@@ -440,7 +470,7 @@ export default function HomeScreen() {
                     }}
                     initialName={editingList.name}
                     initialColour={editingList.colour}
-                    initialIcon={editingList.icon ?? undefined}
+                    initialIcon={editingList.icon}
                     title="Edit List"
                 />
             )}

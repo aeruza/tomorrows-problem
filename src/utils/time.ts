@@ -12,7 +12,7 @@ export function getRelativeTime(dateString: string): string {
     if(diffSec < 60) return "just now";
     if(diffMin < 60) return `${diffMin}m ago`;
     if(diffHour < 24) return `${diffHour}h ago`;
-    if(diffDay === 1) return `yesterday`;
+    if(diffDay === 1) return "yesterday";
     if(diffDay < 7) return `${diffDay}d ago`;
     if(diffWeek < 4) return `${diffWeek}w ago`;
     if(diffMonth < 12) return `${diffMonth}mo ago`;

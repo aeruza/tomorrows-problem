@@ -12,8 +12,8 @@ const PRESET_COLOURS = [
     "#3B82F6", // blue
     "#8B5CF6", // purple
     "#EC4899", // pink
-    "#64748B", // gray
-    "#78716C"  // stone
+    "#6B7280", // gray
+    "#78716C",  // stone
 ];
 
 interface ColourPickerProps {
@@ -21,7 +21,7 @@ interface ColourPickerProps {
     onSelect: (colour: string) => void;
 }
 
-export function ColourPicker({ selectedColour, onSelect }: ColourPickerProps) {
+export default function ColourPicker({ selectedColour, onSelect }: ColourPickerProps) {
     return (
         <div className="flex flex-wrap gap-2">
             {PRESET_COLOURS.map((colour) => (
@@ -61,7 +61,7 @@ function IconPicker({ selectedIcon, onSelect }: IconPickerProps) {
                             ? "border-gray-900 dark:border-white bg-neutral-100 dark:bg-neutral-600 scale-110"
                             : "border-neutral-200 dark:border-neutral-600 hover:border-neutral-400"
                             }`}
-                            aria-label={`Select icon: ${preset.id}`}
+                            aria-label={`Select icon: ${preset.label}`}
                             title={preset.label}
                     >
                         { preset.id === null ? (
@@ -119,7 +119,7 @@ export function ListModal({ isOpen, onClose, onSave, initialName = "", initialCo
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             placeholder="Enter list name"
-                            className="w-full px-3 py-2 border border-gray-200 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:focus:ring-neutral-500 transition-all"
+                            className="w-full px-3 py-2 border border-gray-200 dark:border-neutral-600 rounded-xl bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:focus:ring-neutral-500 transition-all"
                             autoFocus
                             onKeyDown={(e) => {
                                 if (e.key === "Enter") handleSave();
@@ -145,14 +145,14 @@ export function ListModal({ isOpen, onClose, onSave, initialName = "", initialCo
                 <div className="flex justify-end gap-3 mt-6">
                     <button
                         onClick={onClose}
-                        className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-neutral-700 rounded-lg transition-all duration-200"
+                        className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-neutral-700 rounded-xl transition-all duration-200"
                     >
                         Cancel
                     </button>
                     <button
                         onClick={handleSave}
                         disabled={!name.trim()}
-                        className="px-4 py-2 text-sm font-medium text-white bg-neutral-800 dark:bg-neutral-200 dark:text-neutral-900 hover:bg-neutral-700 dark:hover:bg-neutral-300 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-4 py-2 text-sm font-medium text-white bg-neutral-800 dark:bg-neutral-200 dark:text-neutral-900 hover:bg-neutral-700 dark:hover:bg-neutral-300 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         Save
                     </button>

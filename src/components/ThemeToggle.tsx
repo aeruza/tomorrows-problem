@@ -27,7 +27,7 @@ export default function ThemeToggle() {
                                 className="w-3.5 h-3.5 text-amber-500"
                                 fill="none"
                                 stroke="currentColor"
-                                strokeWidth="2"
+                                strokeWidth={2}
                                 viewBox="0 0 24 24"
                             >
                                 <circle cx="12" cy="12" r="4" />
