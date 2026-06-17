@@ -1,6 +1,6 @@
 "use client"; 
 
-import { useState, useRef, useMemo } from "react";
+import React, { useState, useRef, useMemo } from "react";
 import { useTodo } from "@/contexts/TodoContext";
 import ThemeToggle from "@/components/ThemeToggle";
 import UndoToast from "@/components/UndoToast";
@@ -13,7 +13,7 @@ interface ListDetailProps {
 }
 
 export default function ListDetail({ listId }: ListDetailProps) {
-    const { lists, addItem, updateItem, toggleItem, deleteItem, indentItem, outdentItem, reorderItems, clearCompleted } = useTodo();
+    const { lists, loading, addItem, updateItem, toggleItem, deleteItem, indentItem, outdentItem, reorderItems, clearCompleted } = useTodo();
     const [newItemText, setNewItemText] = useState("");
     const [editingItemId, setEditingItemId] = useState<string | null>(null);
     const [editingText, setEditingText] = useState("");
@@ -44,6 +44,22 @@ export default function ListDetail({ listId }: ListDetailProps) {
 
     const incompleteItems = useMemo(() => sortedItems.filter((item) => !item.completed), [sortedItems]);
     const completedItems = useMemo(() => sortedItems.filter((item) => item.completed), [sortedItems]);
+
+    const sortedIndexMap = useMemo(() => {
+        const map = new Map<string, number>();
+        sortedItems.forEach((item, index) => {
+            map.set(item.id, index);
+        });
+        return map;
+    }, [sortedItems]);
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 flex items-center justify-center">
+                <div className="animate-pulse text-gray-500 dark:text-gray-400">Loading...</div>
+            </div>
+        );
+    }
 
     if (!list) {
         return (
@@ -76,8 +92,10 @@ export default function ListDetail({ listId }: ListDetailProps) {
     };
 
     const handleSaveEdit = () => {
-        if(editingItemId && editingText.trim()) {
-            updateItem(listId, editingItemId, editingText.trim());
+        if(editingItemId) {
+            if (editingText.trim()) {
+                updateItem(listId, editingItemId, editingText.trim());
+            }
         }
         setEditingItemId(null);
         setEditingText("");
@@ -109,13 +127,17 @@ export default function ListDetail({ listId }: ListDetailProps) {
 
         const HORIZONTAL_THRESHOLD = 50;
 
-        if(dragIndex !== null && dragStartPos.current) {
+        const wasCancelled = e.dataTransfer.dropEffect === "none";
+
+        if(!wasCancelled && dragIndex !== null && dragStartPos.current) {
             const deltaX = e.clientX - dragStartPos.current.x;
             const deltaY = e.clientY - dragStartPos.current.y;
             const isHorizontal = Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > HORIZONTAL_THRESHOLD;
 
-            if (isHorizontal) {
-                const itemId = list.items[dragIndex]?.id;
+            if (sortMode !== "manual") {
+                //
+            } else if (isHorizontal) {
+                const itemId = sortedItems[dragIndex]?.id;
                 if (itemId) {
                     if(deltaX > 0) {
                         indentItem(listId, itemId);
@@ -134,7 +156,8 @@ export default function ListDetail({ listId }: ListDetailProps) {
         dragStartPos.current = null;
     };
 
-    const handleDragLeave = () => {
+    const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+        if (e.currentTarget.contains(e.relatedTarget as Node)) return;
         setDragOverIndex(null);
     };
 
@@ -151,7 +174,6 @@ export default function ListDetail({ listId }: ListDetailProps) {
 
         return (
             <div
-                key={item.id}
                 draggable={isManual}
                 onDragStart={(e) => isManual && handleDragStart(e, index)}
                 onDragOver={(e) => isManual && handleDragOver(e, index)}
@@ -329,8 +351,9 @@ export default function ListDetail({ listId }: ListDetailProps) {
                 {list.items.length > 0 && (
                     <div className="flex items-center justify-between mb-4 px-3 py-2 rounded-xl bg-white dark:bg-neutral-800 shadow-sm border border-neutral-100 dark:border-neutral-700/50">
                         <div className="flex items-center gap-2">
-                            <label className="text-xs text-gray-500 dark:text-gray-400 font-medium">Sort:</label>
+                            <label htmlFor="sort-mode-select" className="text-xs text-gray-500 dark:text-gray-400 font-medium">Sort:</label>
                             <select
+                                id="sort-mode-select"
                                 value={sortMode}
                                 onChange={(e) => setSortMode(e.target.value as SortMode)}
                                 className="text-xs px-2 py-1.5 rounded-xl border border-neutral-200 dark:border-neutral-600 bg-white dark:bg-neutral-800 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-neutral-400 transition-all duration-200"
@@ -372,7 +395,11 @@ export default function ListDetail({ listId }: ListDetailProps) {
                     <div>
                         {/* Incomplete items */}
                         <div className="space-y-2">
-                            {incompleteItems.map((item, index) => renderItem(item, sortedItems.indexOf(item)))}
+                            {incompleteItems.map((item) => (
+                                <React.Fragment key={item.id}>
+                                    {renderItem(item, sortedIndexMap.get(item.id) ?? 0)}
+                                </React.Fragment>
+                            ))}
                         </div>
 
                         {/* Completed items (collapsible) */}
@@ -380,6 +407,8 @@ export default function ListDetail({ listId }: ListDetailProps) {
                             <div className="mt-4">
                                 <button
                                     onClick={() => setCompletedCollapsed(!completedCollapsed)}
+                                    aria-expanded={!completedCollapsed}
+                                    aria-controls="completed-items"
                                     className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors mb-2 py-1"
                                 >
                                     <svg
@@ -395,8 +424,12 @@ export default function ListDetail({ listId }: ListDetailProps) {
                                     </span>
                                 </button>
                                 {!completedCollapsed && (
-                                    <div className="space-y-2">
-                                        {completedItems.map((item) => renderItem(item, sortedItems.indexOf(item)))}
+                                    <div id="completed-items-section" className="space-y-2">
+                                        {completedItems.map((item) => (
+                                            <React.Fragment key={item.id}>
+                                                {renderItem(item, sortedIndexMap.get(item.id) ?? 0)}
+                                            </React.Fragment>
+                                        ))}
                                     </div>
                                 )}
                             </div>

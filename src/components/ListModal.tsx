@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ListIcon } from "@/types";
 import { PRESET_ICONS } from "@/components/ListIcons";
 
@@ -21,7 +21,7 @@ interface ColourPickerProps {
     onSelect: (colour: string) => void;
 }
 
-export default function ColourPicker({ selectedColour, onSelect }: ColourPickerProps) {
+function ColourPicker({ selectedColour, onSelect }: ColourPickerProps) {
     return (
         <div className="flex flex-wrap gap-2">
             {PRESET_COLOURS.map((colour) => (
@@ -88,10 +88,46 @@ interface ListModalProps {
     title: string;
 }
 
-export function ListModal({ isOpen, onClose, onSave, initialName = "", initialColour = PRESET_COLOURS[4], initialIcon = null, title }: ListModalProps) {
+export function ListModal({ 
+    isOpen, 
+    onClose, 
+    onSave, 
+    initialName = "", 
+    initialColour = PRESET_COLOURS[4], 
+    initialIcon = null, 
+    title,
+}: ListModalProps) {
     const [name, setName] = useState(initialName);
     const [colour, setColour] = useState(initialColour);
     const [icon, setIcon] = useState<ListIcon>(initialIcon);
+
+    const firstFocusRef = useRef<HTMLInputElement>(null);
+    const wasOpen = useRef(false);
+    if (isOpen && !wasOpen.current) {
+        setName(initialName);
+        setColour(initialColour);
+        setIcon(initialIcon ?? null);
+    }
+    wasOpen.current = isOpen;
+
+    // Focus name input on open
+    useEffect(() => {
+        if (isOpen) firstFocusRef.current?.focus();
+    }, [isOpen]);
+
+    // Esc Key
+    useEffect(() => {
+        if (!isOpen) return;
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Escape") {
+                onClose();
+            }
+        };
+        document.addEventListener("keydown", handleKeyDown);
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [isOpen, onClose]);
 
     if (!isOpen) return null;
 
@@ -103,24 +139,35 @@ export function ListModal({ isOpen, onClose, onSave, initialName = "", initialCo
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm animate-fade-in">
-            <div className="bg-white dark:bg-neutral-800 rounded-2xl p-6 w-full max-w-md mx-4 shadow-2xl animate-scale-in">
-                <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
+        <div 
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm animate-fade-in"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="list-modal-title"
+            onClick={onClose}
+        >
+            <div className="bg-white dark:bg-neutral-800 rounded-2xl p-6 w-full max-w-md mx-4 shadow-2xl animate-scale-in"
+                onClick={(e) => e.stopPropagation()}
+            >
+                <h2 id="list-modal-title" className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
                     {title}
                 </h2>
 
                 <div className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
+                        <label 
+                            htmlFor="list-modal-name"
+                            className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
                             List Name
                         </label>
                         <input
+                            id="list-modal-name"
+                            ref={firstFocusRef}
                             type="text"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             placeholder="Enter list name"
                             className="w-full px-3 py-2 border border-gray-200 dark:border-neutral-600 rounded-xl bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:focus:ring-neutral-500 transition-all"
-                            autoFocus
                             onKeyDown={(e) => {
                                 if (e.key === "Enter") handleSave();
                             }}

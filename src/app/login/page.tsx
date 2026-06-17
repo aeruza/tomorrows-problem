@@ -2,12 +2,12 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
-    const { signIn, signUp } = useAuth();
+    const { signIn, signUp, user, loading: authLoading } = useAuth();
     const router = useRouter();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -16,37 +16,57 @@ export default function LoginPage() {
     const [loading, setLoading] = useState(false);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
+    // Redirect already-authenticated users to home
+    useEffect(() => {
+        if (!authLoading && user) {
+            router.replace("/");
+        }
+    }, [user, authLoading, router]);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
         setSuccessMessage(null);
         setLoading(true);
+        let navigating = false;
 
-        if (isSignUp) {
-            const { error } = await signUp(email, password);
-            if (error) {
-                setError(error);
+        try {
+            if (isSignUp) {
+                const { error } = await signUp(email, password);
+                if (error) {
+                    setError(error);
+                } else {
+                    setSuccessMessage("Please check your email to confirm your account.");
+                    setIsSignUp(false);
+                }
             } else {
-                setSuccessMessage("Please check your email to confirm your account.");
-                setIsSignUp(false);
+                const { error } = await signIn(email, password);
+                if (error) {
+                    setError(error);
+                } else {
+                    // On success let the useEffect handle the redirect to ensure it only happens after auth state updates
+                    // Set a flag so we skip resetting loading
+                    navigating = true;
+                }
             }
-        } else {
-            const { error } = await signIn(email, password);
-            if (error) {
-                setError(error);
-            } else {
-                router.push("/");
-            }
+        } finally {
+            if (!navigating) setLoading(false);
         }
-
-        setLoading(false);
     };
+
+    if (authLoading) {
+        return (
+            <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 flex items-center justify-center">
+                <div className="animate-pulse text-gray-500 dark:text-gray-400">Loading...</div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 flex items-center justify-center px-4">
             <div className="w-full max-w-sm">
                 <h1 className="text-2xl font-bold text-gray-900 dark:text-white text-center mb-2">
-                    Tomorrow's Problem
+                    Tomorrow&apos;s Problem
                 </h1>
                 <p className="text-sm text-gray-500 dark:text-gray-400 text-center mb-8">
                     {isSignUp ? "Create an account to get started." : "Sign in to continue."}
@@ -54,10 +74,11 @@ export default function LoginPage() {
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                             Email
                         </label>
                         <input
+                            id="login-email"
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
@@ -68,14 +89,16 @@ export default function LoginPage() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        <label htmlFor="login-password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                             Password
                         </label>
                         <input
+                            id="login-password"
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
+                            minLength={6}
                             className="w-full px-4 py-3 border border-neutral-200 dark:border-neutral-600 rounded-xl bg-white dark:bg-neutral-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:focus:ring-neutral-400 transition-all"
                             placeholder="At least 6 characters"
                         />
@@ -100,6 +123,8 @@ export default function LoginPage() {
                             setIsSignUp(!isSignUp);
                             setError(null);
                             setSuccessMessage(null);
+                            setEmail("");
+                            setPassword("");
                         }}
                         className="font-medium text-gray-900 dark:text-white hover:underline"
                     >

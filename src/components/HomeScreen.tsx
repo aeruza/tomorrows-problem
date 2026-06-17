@@ -60,7 +60,8 @@ export default function HomeScreen() {
         dragNodeRef.current = null;
     };
 
-    const handleDragLeave = () => {
+    const handleDragLeave = (e: React.DragEvent) => {
+        if(e.currentTarget.contains(e.relatedTarget as Node)) return;
         setDragOverIndex(null);
     };
 
@@ -93,6 +94,7 @@ export default function HomeScreen() {
                         <div className="flex items-center bg-neutral-200 dark:bg-neutral-700 rounded-lg p-0.5">
                             <button
                                 onClick={() => setViewMode("rows")}
+                                aria-pressed={viewMode === "rows"}
                                 className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 ${
                                     viewMode === "rows" 
                                         ? "bg-white dark:bg-neutral-600 text-gray-900 dark:text-white shadow-sm"
@@ -103,6 +105,7 @@ export default function HomeScreen() {
                             </button>
                             <button
                                 onClick={() => setViewMode("tiles")}
+                                aria-pressed={viewMode === "tiles"}
                                 className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 ${
                                     viewMode === "tiles" 
                                         ? "bg-white dark:bg-neutral-600 text-gray-900 dark:text-white shadow-sm"
@@ -114,7 +117,7 @@ export default function HomeScreen() {
                         </div>
                         <ThemeToggle />
                         <button
-                            onClick={() => signOut()}
+                            onClick={signOut}
                             className="p-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-700 text-gray-600 dark:text-gray-300 transition-all duration-200"
                             title="Sign Out"
                             aria-label="Sign Out"
@@ -187,12 +190,13 @@ export default function HomeScreen() {
                                                         onChange={(e) => setInlineEditName(e.target.value)}
                                                         onBlur={handleInlineRenameSave}
                                                         onKeyDown={(e) => {
-                                                            if (e.key === "Enter") handleInlineRenameSave();
+                                                            e.stopPropagation();
+                                                            if (e.key === "Enter") { e.preventDefault(); handleInlineRenameSave(); }
                                                             if (e.key === "Escape") { setInlineEditId(null); setInlineEditName(""); }
                                                         }}
                                                         className="font-semibold text-gray-900 dark:text-white text-lg bg-transparent border-b border-neutral-400 focus:outline-none w-full"
                                                         autoFocus
-                                                        onClick={(e) => e.preventDefault()}
+                                                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
                                                     />
                                                 ) : (
                                                     <h3 
@@ -206,7 +210,7 @@ export default function HomeScreen() {
                                                     </h3>
                                                 )}
                                                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                                                    {totalCount}{" "} {totalCount === 1 ? "item" : "items"}
+                                                    {totalCount} {totalCount === 1 ? "item" : "items"}
                                                 </p>
                                                 </div>
                                                 {totalCount > 0 && (
@@ -230,7 +234,7 @@ export default function HomeScreen() {
                                         </div>
                                     </Link>
                                     {/* Action Buttons */}
-                                    <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-all duration-200">
+                                    <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-all duration-200">
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
@@ -287,7 +291,6 @@ export default function HomeScreen() {
                                         style={{ borderLeftColor: list.colour }}
                                     >
                                         <Link href={`/list/${list.id}`} className="flex items-center gap-4 flex-1 min-w-0">
-                                            <div className="flex items-center gap-4 p-4 pr-20 rounded-xl bg-white dark:bg-neutral-800 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer">
                                                 <div className="flex items-center gap-2 shrink-0">
                                                     <div
                                                         className="w-4 h-4 rounded-full"
@@ -305,12 +308,13 @@ export default function HomeScreen() {
                                                         onChange={(e) => setInlineEditName(e.target.value)}
                                                         onBlur={handleInlineRenameSave}
                                                         onKeyDown={(e) => {
-                                                            if (e.key === "Enter") handleInlineRenameSave();
+                                                            e.stopPropagation();
+                                                            if (e.key === "Enter") { e.preventDefault(); handleInlineRenameSave(); }
                                                             if (e.key === "Escape") { setInlineEditId(null); setInlineEditName(""); }
                                                         }}
                                                         className="font-medium text-gray-900 dark:text-white bg-transparent border-b border-neutral-400 focus:outline-none w-full"
                                                         autoFocus
-                                                        onClick={(e) => e.preventDefault()}
+                                                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
                                                     />
                                                 ) : (
                                                     <h3
@@ -330,13 +334,11 @@ export default function HomeScreen() {
                                                 </span>
                                             )}
                                             <span className="text-sm text-gray-500 dark:text-gray-400 shrink-0">
-                                                {totalCount}{" "}
-                                                {totalCount === 1 ? "item" : "items"}
+                                                {totalCount} {totalCount === 1 ? "item" : "items"}
                                             </span>
-                                        </div>
                                     </Link>
                                     {/* Action Buttons */}
-                                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all duration-200 shrink-0">
+                                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-all duration-200 shrink-0">
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
@@ -379,6 +381,8 @@ export default function HomeScreen() {
                     <div className="mt-10 border-t border-neutral-200 dark:border-neutral-700/50 pt-6">
                         <button
                             onClick={() => setShowTrash(!showTrash)}
+                            aria-expanded={showTrash}
+                            aria-controls="trash-content"
                             className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-4"
                         >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -390,7 +394,7 @@ export default function HomeScreen() {
                             </svg>
                         </button>
                         {showTrash && (
-                            <div>
+                            <div id="trash-section">
                                 <div className="flex justify-end mb-3">
                                     <button
                                         onClick={() => setShowEmptyTrashConfirm(true)}
@@ -409,7 +413,7 @@ export default function HomeScreen() {
                                                 {item.text}
                                             </span>
                                             <span className="text-xs text-gray-400 dark:text-gray-500 shrink-0">
-                                                from {item.originalListName}
+                                                from {item.originalListName ?? "Unknown List"}
                                             </span>
                                             <div className="flex gap-1 shrink-0">
                                                 <button
@@ -484,7 +488,7 @@ export default function HomeScreen() {
                     setDeletingListId(null);
                 }}
                 title="Delete List"
-                message="Are you sure you want to delete this list? All items will be permanently deleted. This action cannot be undone."
+                message="Are you sure you want to delete this list? All items will be moved to the trash. You can undo this action."
             />
 
             {/* Empty Trash Confirmation Modal */}
@@ -497,6 +501,7 @@ export default function HomeScreen() {
                 }}
                 title="Empty Trash"
                 message="Are you sure you want to empty the trash? All items in the trash will be permanently deleted. This action cannot be undone."
+                confirmLabel="Empty Trash"
             />
                 
             {/* Undo Toast */}

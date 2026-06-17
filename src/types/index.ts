@@ -13,8 +13,8 @@ export interface TrashItem {
     depth: number;
     createdAt: string;
     deletedAt: string;
-    originalListId: string;
-    originalListName: string;
+    originalListId: string | null; // null if deleted from trash
+    originalListName: string | null; // for display purposes in trash, null if deleted from trash
 }
 
 export type ListIcon = "pencil" | "notepad" | "friends" | "graduation" | "brain" | "sync" | "code" | "alert" | null;
