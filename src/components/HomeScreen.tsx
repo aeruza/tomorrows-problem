@@ -94,8 +94,9 @@ export default function HomeScreen() {
                         <div className="flex items-center bg-neutral-200 dark:bg-neutral-700 rounded-lg p-0.5">
                             <button
                                 onClick={() => setViewMode("rows")}
+                                onMouseDown={(e) => e.preventDefault()}
                                 aria-pressed={viewMode === "rows"}
-                                className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 ${
+                                className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 focus: outline-none ${
                                     viewMode === "rows" 
                                         ? "bg-white dark:bg-neutral-600 text-gray-900 dark:text-white shadow-sm"
                                         : "text-gray-500 dark:text-gray-400"
@@ -105,8 +106,9 @@ export default function HomeScreen() {
                             </button>
                             <button
                                 onClick={() => setViewMode("tiles")}
+                                onMouseDown={(e) => e.preventDefault()}
                                 aria-pressed={viewMode === "tiles"}
-                                className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 ${
+                                className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 focus: outline-none ${
                                     viewMode === "tiles" 
                                         ? "bg-white dark:bg-neutral-600 text-gray-900 dark:text-white shadow-sm"
                                         : "text-gray-500 dark:text-gray-400"
@@ -118,6 +120,7 @@ export default function HomeScreen() {
                         <ThemeToggle />
                         <button
                             onClick={signOut}
+                            onMouseDown={(e) => e.preventDefault()}
                             className="p-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-700 text-gray-600 dark:text-gray-300 transition-all duration-200"
                             title="Sign Out"
                             aria-label="Sign Out"
@@ -245,6 +248,7 @@ export default function HomeScreen() {
                                                     icon: list.icon ?? null,
                                                 });
                                             }}
+                                            onMouseDown={(e) => e.preventDefault()}
                                             className="p-1.5 rounded-lg bg-white/80 dark:bg-neutral-700/80 hover:bg-white dark:hover:bg-neutral-600 text-gray-600 dark:text-gray-300 shadow-sm transition-all duration-200"
                                             aria-label="Edit List"
                                         >
@@ -257,6 +261,7 @@ export default function HomeScreen() {
                                                 e.stopPropagation();
                                                 setDeletingListId(list.id);
                                             }}
+                                            onMouseDown={(e) => e.preventDefault()}
                                             className="p-1.5 rounded-lg bg-white/80 dark:bg-neutral-700/80 hover:bg-white dark:hover:bg-neutral-600 text-red-400 shadow-sm transition-all duration-200"
                                             aria-label="Delete List"
                                         >
@@ -349,6 +354,7 @@ export default function HomeScreen() {
                                                     icon: list.icon ?? null,
                                                 });
                                             }}
+                                            onMouseDown={(e) => e.preventDefault()}
                                             className="p-1.5 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-700 text-gray-600 dark:text-gray-300 transition-all duration-200"
                                             aria-label="Edit List"
                                         >
@@ -361,6 +367,7 @@ export default function HomeScreen() {
                                                 e.stopPropagation();
                                                 setDeletingListId(list.id);
                                             }}
+                                            onMouseDown={(e) => e.preventDefault()}
                                             className="p-1.5 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-700 text-red-400 transition-all duration-200"
                                             aria-label="Delete List"
                                         >
@@ -448,6 +455,7 @@ export default function HomeScreen() {
                 {/* Create Lists Button */}
                 <button
                     onClick={() => setShowCreateModal(true)}
+                    onMouseDown={(e) => e.preventDefault()}
                     className="fixed bottom-8 right-8 w-14 h-14 bg-neutral-800 dark:bg-neutral-200 hover:bg-neutral-700 dark:hover:bg-neutral-300 text-white dark:text-neutral-800 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex items-center justify-center text-2xl"
                     aria-label="Create New List"
                 >
